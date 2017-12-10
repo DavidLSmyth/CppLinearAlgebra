@@ -1,5 +1,6 @@
 #include "Matrix.h"
 #include <iostream>
+#include <math.h>
 using namespace MatrixNamespace;
 #define loop(x, n) for(int x=0; x < n; x++)
 
@@ -30,8 +31,9 @@ Matrix<T> Matrix<T>::operator=(const Matrix<T> &other_mat) {
 	else{
 		delete[] elements; // Just in case there was any memory
 						  // already allocated to this
-		T elements = new T[(other_mat.no_rows)*(other_mat.no_cols)];
-		memcpy(elements, other_mat.elements, sizeof(T) * no_rows* no_cols);
+		T* elements = new T[other_mat.no_rows*other_mat.no_cols];
+
+		memcpy(elements, &other_mat.elements, sizeof(T) * no_rows* no_cols);
 		/*
 		loop(elements_counter, no_rows * no_cols) {
 			elements[elements_counter] = other_mat[elements_counter];
@@ -126,36 +128,22 @@ void Matrix<T>::get_row(int row, T &return_array)
 }
 
 template<class T>
-void Matrix<T>::copy_elements(Matrix<T>& other_mat) {
-	
-	if (verify_dims_add(other_mat)) {
-		std::cout << "Copying" << sizeof(T)*no_rows*no_cols << " bytes " << std::endl;
-		std::cout << "Copying" << std::endl;
-		other_mat.print_matrix();
-		std::cout << "To this matrix" << std::endl;
-		//memcpy(this->elements, other_mat.elements, no_rows * no_cols * sizeof(T));
-		loop(element_counter, no_rows * no_cols) {
-			std::cout << "Setting other_mat index" << element_counter << " to " << other_mat.get_element(0,0);
-			this->set_element(0, 1, other_mat.get_element(0,0));
-		}
+void MatrixNamespace::Matrix<T>::swap_rows(int row_index_1,int row_index_2)
+{
+	if (0 <= row_index_1 && row_index_1< no_rows && 0<= row_index_2  && row_index_2< no_rows){
+		T* row1_copy = new T[sizeof(T) * no_cols];
+		//copy row 1 of matrix to row1_copy
+		memcpy(row1_copy, &elements + (sizeof(T) * no_cols * row_index_1), sizeof(T) * no_cols);
+		//copy the elements from row 2 to row 1
+		memcpy(&elements + (sizeof(T) * no_cols * row_index_1), &elements + (sizeof(T) * no_cols * row_index_2), sizeof(T) * no_cols);
+		memcpy(&elements + (sizeof(T) * no_cols * row_index_2), row1_copy, sizeof(T) * no_cols);
+		delete row1_copy;
 	}
 	else {
+		std::cerr << "Out of bounds error" << std::endl;
 		throw(dimension_mismatch);
 	}
 }
-
-template<class T>
-void Matrix<T>::fill(Matrix<T> &other_matrix) {
-	if (verify_dims_add(other_mat)) {
-		loop(counter, no_rows * no_cols) {
-			elements[counter] = other_matrix.elements[counter];
-		}
-	}
-	else {
-		throw(dimension_mismatch);
-	}
-}
-
 
 template<class T>
 Matrix<T> Matrix<T>::get_col(int col)
@@ -194,6 +182,31 @@ void Matrix<T>::set_element(int row_index, int col_index, T element)
 		std::cerr << "Dimensions do not match. Rows: " <<row_index<<"Cols"<<col_index<< "No rows"<<no_rows<<"No cols"<<no_cols<<std::endl;
 		throw(dimension_mismatch);
 	}
+}
+
+template<class T>
+T MatrixNamespace::Matrix<T>::two_norm()
+{
+	//matrix norms can be defined in a number of different ways
+	//must define a function |.| : K^Mxn -> R satisfying: 
+	/*
+	1). ||c*A|| = |c| * ||A||
+	2). ||A+B|| <= ||A|| + ||B||
+	3). ||A|| >= 0
+	4). ||A|| = 0 iff A = 0_m,n
+	return T();
+	*/
+	T sum = 0;
+	loop(element, no_rows * no_cols) {
+		sum += elements[element] * elements[element];
+	}
+	return sqrt(sum);
+}
+
+template<class T>
+float MatrixNamespace::Matrix<T>::determinant()
+{
+	return 0.0f;
 }
 
 template<class T>

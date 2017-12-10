@@ -43,24 +43,25 @@ namespace MatrixNamespace {
 		//Matrix. So need to define a const method
 		Matrix<T> operator*(const Matrix<T> &other_mat);
 		Matrix<T> operator*(const T &scalar);
+		bool operator==(const Matrix<T> &other_mat);
+		bool operator!=(Matrix<T> other_mat);
 
 
 		Matrix<T> operator=(const Matrix<T> &other_mat);
 		Matrix<T> transpose();
 		void get_row(int row, T &return_array);
+		void swap_rows(int row_index_1, int row_index_2);
 		Matrix<T> get_col(int col);
 		void zeros();
-		void fill(Matrix<T> &other_matrix);
-		//copies elements from other_mat to this matrix
-		void copy_elements(Matrix<T>& other_mat);
-		bool operator==(const Matrix<T> &other_mat);
-		bool operator!=(Matrix<T> other_mat);
+		
 		void set_element(int row_index, int col_index, T element); 
 		T get_element(int row_index, int col_index) { return elements[(row_index * no_cols) + col_index]; };
 		//if const, then get_element complains because it is not defined for a const
 		//Matrix. So need to define a const method
 		T get_element(int row_index, int col_index) const {return elements[(row_index * no_cols) + col_index]; };
 		int get_rank() { throw "NotImplementedError" };
+		T two_norm();
+		float determinant();
 		int* get_dimensions();
 		Matrix get_inverse();
 		void print_matrix();

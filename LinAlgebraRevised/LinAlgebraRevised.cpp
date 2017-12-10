@@ -32,7 +32,7 @@ int main()
 	Matrix<int> new_mat = my_matrix * row_1;
 	new_mat.print_matrix();
 	
-	row_1.copy_elements(my_matrix);
+	row_1 = Matrix<int>(my_matrix);
 
 
 	Matrix<int> my_matrix1 = Matrix<int>(2, 3);
@@ -49,6 +49,12 @@ int main()
 
 	int element_array[4] = {10,20,30,40};
 	Matrix<int> mat_1 = Matrix<int>(2, 2, *element_array);
+
+	cout << "Reinitialising my_matrix" << endl;
+	mat_1.print_matrix();
+	mat_1.swap_rows(0, 1);
+	cout << "Swapping matrix row 0 and 1" << endl;
+	mat_1.print_matrix();
 	
 	cout << "Press any key to continue..." << endl;
 	int x;
