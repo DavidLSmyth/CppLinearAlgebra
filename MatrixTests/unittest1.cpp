@@ -183,5 +183,26 @@ namespace MatrixTests
 			Assert::AreEqual(1, my_matrix.get_element(1, 2));
 		}
 
+		TEST_METHOD(TestEquality)
+		{
+			Matrix<int> my_matrix = Matrix<int>(2, 3);
+			my_matrix.set_element(0, 0, 2);
+			my_matrix.set_element(0, 1, 0);
+			my_matrix.set_element(0, 2, 1);
+			my_matrix.set_element(1, 0, 0);
+			my_matrix.set_element(1, 1, 2);
+			my_matrix.set_element(1, 2, 5);
+
+			Matrix<int> my_matrix1 = Matrix<int>(2, 3);
+			my_matrix1.set_element(0, 0, 2);
+			my_matrix1.set_element(0, 1, 0);
+			my_matrix1.set_element(0, 2, 1);
+			my_matrix1.set_element(1, 0, 0);
+			my_matrix1.set_element(1, 1, 2);
+			my_matrix1.set_element(1, 2, 5);
+
+			Assert::IsTrue(my_matrix == my_matrix1);
+		}
+
 	};
 }

@@ -132,11 +132,13 @@ void MatrixNamespace::Matrix<T>::swap_rows(int row_index_1,int row_index_2)
 {
 	if (0 <= row_index_1 && row_index_1< no_rows && 0<= row_index_2  && row_index_2< no_rows){
 		T* row1_copy = new T[sizeof(T) * no_cols];
+		T* start_index = &elements[no_cols * row_index_1];
 		//copy row 1 of matrix to row1_copy
-		memcpy(row1_copy, &elements + (sizeof(T) * no_cols * row_index_1), sizeof(T) * no_cols);
+		memcpy(row1_copy, &elements[no_cols * row_index_1], sizeof(T) * no_cols);
 		//copy the elements from row 2 to row 1
-		memcpy(&elements + (sizeof(T) * no_cols * row_index_1), &elements + (sizeof(T) * no_cols * row_index_2), sizeof(T) * no_cols);
-		memcpy(&elements + (sizeof(T) * no_cols * row_index_2), row1_copy, sizeof(T) * no_cols);
+		memcpy(&elements[no_cols * row_index_1], &elements[no_cols * row_index_2], sizeof(T) * no_cols);
+		memcpy(&elements[no_cols * row_index_2], row1_copy, sizeof(T) * no_cols);
+		//get rid of temp files
 		delete row1_copy;
 	}
 	else {
@@ -158,7 +160,12 @@ Matrix<T> Matrix<T>::get_col(int col)
 template<class T>
 bool Matrix<T>::operator==(const Matrix<T> &other_mat)
 {
-	if (elements == other_mat.elements && no_rows == other_mat.no_rows) {
+	if (no_rows == other_mat.no_rows && no_cols == other_mat.no_cols) {
+		loop(element_index, no_rows * no_cols) {
+			if (elements[element_index] != other_mat.elements[element_index]) {
+				return false;
+			}
+		}
 		return true;
 	}
 	else {
