@@ -1,3 +1,4 @@
+
 #pragma once
 #define loop(x, n) for(int x=0; x < n; x++)
 namespace MatrixNamespace {
@@ -43,18 +44,24 @@ namespace MatrixNamespace {
 		//Matrix. So need to define a const method
 		Matrix<T> operator*(const Matrix<T> &other_mat);
 		Matrix<T> operator*(const T &scalar);
-		bool operator==(const Matrix<T> &other_mat);
+		bool operator==(const Matrix<T> &other_mat) const;
 		bool operator!=(Matrix<T> other_mat);
 
 
 		Matrix<T> operator=(const Matrix<T> &other_mat);
 		Matrix<T> transpose();
-		void get_row(int row, T &return_array);
+		Matrix<T> get_row(int row_index) const;
+
 		void swap_rows(int row_index_1, int row_index_2);
 		Matrix<T> get_col(int col);
 		void zeros();
+		void identity();
+		void set_diag(T element);
+
+		T* get_elements();
 		
-		void set_element(int row_index, int col_index, T element); 
+		bool set_element(int row_index, int col_index, T element); 
+		bool set_row(int row_index, T* rowArray);
 		T get_element(int row_index, int col_index) { return elements[(row_index * no_cols) + col_index]; };
 		//if const, then get_element complains because it is not defined for a const
 		//Matrix. So need to define a const method
@@ -64,9 +71,11 @@ namespace MatrixNamespace {
 		float determinant();
 		int* get_dimensions();
 		Matrix get_inverse();
+		int get_no_rows();
+		int get_no_cols();
 		void print_matrix();
 		~Matrix<T>() {
-			delete[] elements;
+			delete elements;
 		}
 
 	private:

@@ -81,10 +81,25 @@ namespace MatrixTests
 			my_matrix.set_element(1, 1, 40);
 			Assert::AreEqual(40, my_matrix.get_element(1, 1));
 
-			int* int_array = new int[2];
-			my_matrix.get_row(0, *int_array);
-			Assert::AreEqual(int_array[0], 10);
+			//int* int_array = new int[2];
+			Matrix<int> row_one = my_matrix.get_row(0);
+			Assert::AreEqual(row_one.get_element(0,0), 10);
+			Assert::AreEqual(row_one.get_element(0, 1), 20);
 		}
+
+		TEST_METHOD(TestIdentity) {
+			Matrix<int> my_matrix = Matrix<int>(2, 2);
+			my_matrix.set_element(0, 0, 10);
+			my_matrix.set_element(0, 1, 20);
+			my_matrix.set_element(1, 0, 30);
+			my_matrix.set_element(1, 1, 40);
+			my_matrix.identity();
+			Assert::AreEqual(1, my_matrix.get_element(0, 0));
+			Assert::AreEqual(0, my_matrix.get_element(0, 1));
+			Assert::AreEqual(0, my_matrix.get_element(1, 0));
+			Assert::AreEqual(1, my_matrix.get_element(1, 1));
+		}
+		
 
 		TEST_METHOD(TestAddition)
 		{
