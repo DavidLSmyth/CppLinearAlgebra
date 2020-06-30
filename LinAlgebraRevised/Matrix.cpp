@@ -18,7 +18,7 @@ Matrix<T> MatrixNamespace::Matrix<T>::operator=(const Matrix<T> &other_mat) {
 						  // already allocated
 		no_rows = other_mat.no_rows;
 		no_cols = other_mat.no_cols;
-		T* elements = new T[other_mat.no_rows * other_mat.no_cols];
+		elements = new T[other_mat.no_rows * other_mat.no_cols];
 
 		memcpy(elements, &other_mat.elements, sizeof(T) * no_rows* no_cols);
 		/*

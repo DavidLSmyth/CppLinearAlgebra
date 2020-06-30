@@ -30,7 +30,7 @@ namespace MatrixFunctionsTests
 			test.set_element(2, 2, -3);
 			test.set_element(2, 3, 4);
 
-			//PLUFactorisation<float> res = MatrixFunctions::getPLUFactors<float>(test, 0.0001);
+			PLUFactorisation<float> res = MatrixFunctions::getPLUFactors<float>(test, 0.0001);
 			//res.L.print_matrix();
 			//res.U.print_matrix();
 			//res.P.print_matrix();

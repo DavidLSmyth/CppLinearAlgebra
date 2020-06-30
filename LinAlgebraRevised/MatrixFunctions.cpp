@@ -65,7 +65,7 @@ MatrixFns::PLUFactorisation<T> MatrixFunctions::getPLUFactors(const Matrix<T> &B
 
 		if (maxPivotValue < epsilon) {
 			//if 0, finished
-			throw(unstablePivot);
+			//throw(unstablePivot);
 			return MatrixFns::PLUFactorisation<T> { P, L, U };
 		}
 
