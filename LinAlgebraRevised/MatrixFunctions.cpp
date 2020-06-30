@@ -7,7 +7,10 @@
 using namespace MatrixFns;
 //A library of functions that act on matrices
 
-const char* MatrixFunctions::unstablePivot = "Pivot is < epsilon, result is unstable";
+
+//template <typename T>
+const char MatrixFns::MatrixFunctions::unstablePivot[] = "Pivot is < epsilon, result is unstable";
+
 
 
 template <typename T>
@@ -57,7 +60,7 @@ MatrixFns::PLUFactorisation<T> MatrixFunctions::getPLUFactors(const Matrix<T> &B
 			//update P
 			currentPermutation.identity();
 			currentPermutation.swap_rows(pivotMaxIndex, currentRowIndex);
-			P = (currentPermutation * P);
+			P = Matrix<int>(currentPermutation * P);
 		}
 
 		if (maxPivotValue < epsilon) {
@@ -71,17 +74,28 @@ MatrixFns::PLUFactorisation<T> MatrixFunctions::getPLUFactors(const Matrix<T> &B
 			for (int currentColIndex = currentRowIndex + 1; currentColIndex < A.get_no_rows(); currentColIndex++) {
 				coefficient = -maxPivotValue / U.get_element(currentRowIndex, currentColIndex);
 				tempL.set_element(currentRowIndex, currentColIndex, coefficient);
-				U = (tempL * U);
-				L = (tempL * L);
+				U = Matrix<T>(tempL * U);
+				L = Matrix<T>(tempL * L);
 			}
 
 		}
-		return MatrixFns::PLUFactorisation<T> { P, L, U };
-	
-
 
 	}
+	return MatrixFns::PLUFactorisation<T> { P, L, U };
 
+}
 
+template<typename T>
+Matrix<T> MatrixFns::MatrixFunctions::getSubMatrix(Matrix<T>& A, int start_row, int start_col, int end_row, int end_col)
+{
+	//Matrix<T>& B = const_cast<Matrix<T&>>(A);
+	Matrix<T> returnMatrix = Matrix<T>(end_row - start_row, end_col - start_col);
+	for (int row_counter = start_row; row_counter < end_row; row_counter++) {
+		for (int col_counter = start_col; col_counter < end_col; col_counter++) {
+			returnMatrix.set_element(row_counter - start_row, col_counter - start_col, A.get_element(row_counter, col_counter));
+		}
+
+	}
+	return returnMatrix;
 }
 

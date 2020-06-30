@@ -1,6 +1,6 @@
 
 #pragma once
-#define loop(x, n) for(int x=0; x < n; x++)
+//#define loop(x, n) for(int x=0; x < n; x++)
 namespace MatrixNamespace {
 	//want Matrix to contain elements of type T
 	template<class T>
@@ -40,8 +40,8 @@ namespace MatrixNamespace {
 		Matrix<T> operator-(const Matrix<T> &other_mat);
 		//Multiply by transpose of other
 
-		//if const, then get_element complains because it is not defined for a const
-		//Matrix. So need to define a const method
+
+
 		Matrix<T> operator*(const Matrix<T> &other_mat);
 		Matrix<T> operator*(const T &scalar);
 		bool operator==(const Matrix<T> &other_mat) const;

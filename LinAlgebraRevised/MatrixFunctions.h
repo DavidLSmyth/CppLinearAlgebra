@@ -4,6 +4,8 @@
 #include "Vector.h"
 #include "Matrix.h"
 
+
+
 using namespace MatrixNamespace;
 
 namespace MatrixFns {
@@ -37,10 +39,12 @@ namespace MatrixFns {
 		template <typename T>
 		static MatrixFns::PLUFactorisation<T> getPLUFactors(const Matrix<T>& A, float epsilon);
 
-		
+		template <typename T> 
+		static Matrix<T> getSubMatrix(Matrix<T>& A, int start_row, int start_col, int end_row, int end_col);
 
 	private:
-		static const char* unstablePivot;
+		static const char unstablePivot[];
+		
 	};
 	
 

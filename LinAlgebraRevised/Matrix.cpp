@@ -7,32 +7,17 @@ using namespace MatrixNamespace;
 #define loop(x, n) for(int x=0; x < n; x++)
 
 
-template <class T>
-Matrix<T> Matrix<T>::operator+(const Matrix<T> &other_mat) {
-	if (verify_dims_add(other_mat)) {
-		Matrix<T> return_matrix(no_rows, no_cols);
-		loop(row_counter, no_rows) {
-			loop(col_counter, no_cols) {
-				return_matrix.set_element(row_counter, col_counter, get_element(row_counter, col_counter) + other_mat.get_element(row_counter, col_counter));
-			}
-		}
-		return return_matrix;
-	}
-	else {
-		throw(dimension_mismatch);
-	}
-
-}
-
 template<class T>
-Matrix<T> Matrix<T>::operator=(const Matrix<T> &other_mat) {
+Matrix<T> MatrixNamespace::Matrix<T>::operator=(const Matrix<T> &other_mat) {
 	if (this == &other_mat) {
 		//dereference
 		return(*this);
 	}
 	else{
 		delete[] elements; // Just in case there was any memory
-						  // already allocated to this
+						  // already allocated
+		no_rows = other_mat.no_rows;
+		no_cols = other_mat.no_cols;
 		T* elements = new T[other_mat.no_rows * other_mat.no_cols];
 
 		memcpy(elements, &other_mat.elements, sizeof(T) * no_rows* no_cols);
@@ -57,14 +42,17 @@ void MatrixNamespace::Matrix<T>::identity()
 	set_diag(1);
 }
 
+
+
 template<class T>
 void MatrixNamespace::Matrix<T>::set_diag(T element)
 {
 	zeros();
-	loop(counter, no_rows) {
+	for (int counter = 0; counter < no_rows; counter++) {
 		set_element(counter, counter, element);
 	}
 }
+
 
 template<class T>
 T* MatrixNamespace::Matrix<T>::get_elements()
@@ -74,13 +62,16 @@ T* MatrixNamespace::Matrix<T>::get_elements()
 
 
 template<class T>
-Matrix<T> Matrix<T>::operator-(const Matrix<T> &other_mat)
+Matrix<T> MatrixNamespace::Matrix<T>::operator-(const Matrix<T> &other_mat)
 {
 	if (verify_dims_add(other_mat)) {
 		Matrix<T> return_matrix = Matrix(no_rows, no_cols);
-		loop(element, no_rows * no_cols) {
+		for (int element = 0; element < no_rows * no_cols; element++) {
 			return_matrix.elements[element] = elements[element] + (other_mat.elements[element] * -1);
 		}
+		//loop(element, no_rows * no_cols) {
+			
+		//}
 		return return_matrix;
 	}
 	else {
@@ -89,10 +80,12 @@ Matrix<T> Matrix<T>::operator-(const Matrix<T> &other_mat)
 }
 
 template<class T>
-Matrix<T> Matrix<T>::transpose() {
+Matrix<T> MatrixNamespace::Matrix<T>::transpose() {
 	Matrix<T> return_mat = Matrix<T>(no_cols, no_rows);
-	loop(row_counter, no_rows) {
-		loop(col_counter, no_cols) {
+	for (int row_counter = 0; row_counter < no_rows; row_counter++) {
+	//loop(row_counter, no_rows) {
+		for (int col_counter = 0; col_counter < no_cols; col_counter++) {
+		//loop(col_counter, no_cols) {
 			return_mat.elements[(col_counter * no_rows) + row_counter] = elements[(row_counter* no_cols) + col_counter];
 		}
 	}
@@ -100,14 +93,17 @@ Matrix<T> Matrix<T>::transpose() {
 }
 
 template<class T>
-Matrix<T> Matrix<T>::operator*(const Matrix<T> &other_mat){
+Matrix<T> MatrixNamespace::Matrix<T>::operator*(const Matrix<T> &other_mat){
 	if (verify_dims_mult(other_mat)) {
 		Matrix<T> return_matrix(no_rows, other_mat.no_cols);
-		loop(row_counter, no_rows) {
-			loop(col_counter, other_mat.no_cols) {
+		for (int row_counter = 0; row_counter < no_cols; row_counter++) {
+		//loop(row_counter, no_rows) {
+			for (int col_counter = 0; col_counter < other_mat.no_cols; col_counter++) {
+			//loop(col_counter, other_mat.no_cols) {
 				T s = 0;
 				//k records the kth column of the first matrix and the kth row of the second matrix
-				loop(k, no_cols) {
+				//loop(k, no_cols) {
+				for (int k = 0; k < no_cols; k++) {
 					s += other_mat.get_element(k, col_counter)*get_element(row_counter, k);
 				}
 				return_matrix.set_element(row_counter, col_counter, s);
@@ -121,10 +117,11 @@ Matrix<T> Matrix<T>::operator*(const Matrix<T> &other_mat){
 }
 
 template<class T>
-Matrix<T> Matrix<T>::operator*(const T &scalar) {
+Matrix<T> MatrixNamespace::Matrix<T>::operator*(const T &scalar) {
 	if (verify_dims_mult(other_mat)) {
 		Matrix<T> return_matrix(no_rows, other_mat.no_cols);
-		loop(counter, no_rows * no_cols) {
+		for (counter = 0; counter < no_rows * no_cols; counter++) {
+		//loop(counter, no_rows * no_cols) {
 			return_matrix[counter] = return_matrix[counter] * scalar;
 		}
 		return return_matrix;
@@ -138,13 +135,14 @@ Matrix<T> Matrix<T>::operator*(const T &scalar) {
 
 
 template<class T>
-Matrix<T> Matrix<T>::get_row(int row_index) const
+Matrix<T> MatrixNamespace::Matrix<T>::get_row(int row_index) const
 {
 	Matrix<T> return_mat = Matrix(1, no_cols);
-
-	loop(col_counter, no_cols) {
+	for (int col_counter = 0; col_counter < no_cols; col_counter++) {
+		//loop(col_counter, no_cols) {
 		return_mat.set_element(0, col_counter, get_element(0, col_counter));
 	}
+	//}
 	//T* return_array = new T[no_cols];
 	//memcpy(&return_array, &elements[row*no_cols], no_cols * sizeof(T));
 	/*
@@ -162,11 +160,10 @@ Matrix<T> Matrix<T>::get_row(int row_index) const
 template<class T>
 void MatrixNamespace::Matrix<T>::swap_rows(int row_index_1,int row_index_2)
 {
-	T* row1_copy;
-	T* start_index;
+	
 	if (0 <= row_index_1 && row_index_1< no_rows && 0<= row_index_2  && row_index_2< no_rows){
-		row1_copy = new T[sizeof(T) * no_cols];
-		start_index = &elements[no_cols * row_index_1];
+		T* row1_copy = new T[sizeof(T) * no_cols];
+		T* start_index = &elements[no_cols * row_index_1];
 		//copy row 1 of matrix to row1_copy
 		memcpy(row1_copy, &elements[no_cols * row_index_1], sizeof(T) * no_cols);
 		//copy the elements from row 2 to row 1
@@ -184,20 +181,22 @@ void MatrixNamespace::Matrix<T>::swap_rows(int row_index_1,int row_index_2)
 
 
 template<class T>
-Matrix<T> Matrix<T>::get_col(int col)
+Matrix<T> MatrixNamespace::Matrix<T>::get_col(int col)
 {
 	Matrix<T> return_mat = Matrix(no_rows, 1);
-	loop(row_counter, no_cols) {
+	for (row_counter = 0; row_counter < no_cols; row_counter++) {
+	//loop(row_counter, no_cols) {
 		return_mat.set_element(row_counter, 1, get_element(row_counter, 1));
 	}
 	return return_mat;
 }
 
 template<class T>
-bool Matrix<T>::operator==(const Matrix<T> &other_mat) const
+bool MatrixNamespace::Matrix<T>::operator==(const Matrix<T> &other_mat) const
 {
 	if (no_rows == other_mat.no_rows && no_cols == other_mat.no_cols) {
-		loop(element_index, no_rows * no_cols) {
+		for (int element_index = 0; element_index < no_rows * no_cols; element_index++) {
+		//loop(element_index, no_rows * no_cols) {
 			if (elements[element_index] != other_mat.elements[element_index]) {
 				return false;
 			}
@@ -209,14 +208,33 @@ bool Matrix<T>::operator==(const Matrix<T> &other_mat) const
 	}
 }
 
+
+
 template<class T>
-bool Matrix<T>::operator!=(Matrix other_mat)
+Matrix<T> MatrixNamespace::Matrix<T>::operator+(const Matrix<T>& other_mat)
+{
+	if (verify_dims_add(other_mat)) {
+		Matrix<T> return_matrix(no_rows, no_cols);
+		for (int row_counter = 0; row_counter < no_rows; row_counter++) {
+			for (int col_counter = 0; col_counter < no_cols; col_counter++) {
+				return_matrix.set_element(row_counter, col_counter, get_element(row_counter, col_counter) + other_mat.get_element(row_counter, col_counter));
+			}
+		}
+		return return_matrix;
+	}
+	else {
+		throw(dimension_mismatch);
+	}
+}
+
+template<class T>
+bool MatrixNamespace::Matrix<T>::operator!=(Matrix other_mat)
 {
 	return false;
 }
 
 template<class T>
-bool Matrix<T>::set_row(int row_index, T* rowArray) {
+bool MatrixNamespace::Matrix<T>::set_row(int row_index, T* rowArray) {
 	if (sizeof(rowArray) / sizeof(T) != no_cols) {
 		throw(dimension_mismatch);
 		return false;
@@ -228,7 +246,7 @@ bool Matrix<T>::set_row(int row_index, T* rowArray) {
 }
 
 template<class T>
-bool Matrix<T>::set_element(int row_index, int col_index, T element)
+bool MatrixNamespace::Matrix<T>::set_element(int row_index, int col_index, T element)
 {
 	if(verify_valid_index(row_index, col_index)){
 		elements[(row_index * no_cols) + col_index] = element;
@@ -260,6 +278,7 @@ T MatrixNamespace::Matrix<T>::two_norm()
 	return sqrt(sum);
 }
 
+
 template<class T>
 float MatrixNamespace::Matrix<T>::determinant()
 {
@@ -267,7 +286,7 @@ float MatrixNamespace::Matrix<T>::determinant()
 }
 
 template<class T>
-int* Matrix<T>::get_dimensions()
+int* MatrixNamespace::Matrix<T>::get_dimensions()
 {
 	int* return_array = new int[2];
 	return_array[0] = no_rows;
@@ -294,11 +313,11 @@ int MatrixNamespace::Matrix<T>::get_no_cols()
 }
 
 template<class T>
-void Matrix<T>::print_matrix()
+void MatrixNamespace::Matrix<T>::print_matrix()
 {
 	//std::cout << "Printing matrix" << std::endl;
-	loop(row_counter, no_rows) {
-		loop(col_counter, no_cols) {
+	for (int row_counter = 0; row_counter < no_rows; row_counter++) {
+		for (int col_counter = 0; col_counter < no_cols; col_counter++) {
 			std::cout << get_element(row_counter, col_counter);
 			std::cout << ", ";
 		}
